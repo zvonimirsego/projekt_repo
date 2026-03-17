@@ -18,12 +18,15 @@ FZ-02 Sustav mora imati mjesto za unos potrebnih podataka za prijavu već postoj
 FZ-03 Sustav mora sprijeciti ponovnu registraciju vec postojeceg korisnika. <br>
 FZ-04 Sustav mora omoguciti korisniku povijest svih svojih dosadasnjih posudbi opreme. <br>
 FZ-05 Sustav mora prikazati popis slobodne opreme za posudbu. <br>
-FZ-06 Sustav mora prikazati popis posuđene opreme te kraj roka posudbe.
+FZ-06 Sustav mora prikazati popis posuđene opreme te kraj roka posudbe. <br>
+FZ-09 Sustav mora omogućiti produženje rezervacije posuđene opreme <br>
+FZ-10 Sustav mora spriječiti posudbu već posuđene opreme           <br>
 
 ## Nefunkcijski zahtjevi
 NZ-01 Sustav mora obraditi prijavu korisnika u vremenskom roku od 2 sekunde. <br>
-NZ-02  Sustav mora bilježiti greške pri neuspjeloj rezervaciji. <br>
+NZ-02 Sustav mora bilježiti greške pri neuspjeloj rezervaciji. <br>
 NZ-03 Sustav mora moći prebaciti novoposuđenu opremu s popisa slobodne na popis posuđene opreme u manje od 3 sekunde za 90% zahtjeva.
+NZ-05 Sustav mora biti dizajniran tako bi se nova oprema ili funkcionalnosti mogle dodati bez promjene postojećeg koda.
 
 ## Taskovi
 TASK-01 Napraviti model baze podataka za pohranu registriranih korisnika <br>
