@@ -29,7 +29,8 @@ NZ-01 Sustav mora obraditi prijavu korisnika u vremenskom roku od 2 sekunde. <br
 NZ-02 Sustav mora bilježiti greške pri neuspjeloj rezervaciji. <br>
 NZ-03 Sustav mora moći prebaciti novoposuđenu opremu s popisa slobodne na popis posuđene opreme u manje od 3 sekunde za 90% zahtjeva. <br>
 NZ-04 Korsnik može otkazati posudbu maksimalno 12 h prije posudbe. <br> 
-NZ-05 Sustav mora biti dizajniran tako bi se nova oprema ili funkcionalnosti mogle dodati bez promjene postojećeg koda.
+NZ-05 Sustav mora biti dizajniran tako bi se nova oprema ili funkcionalnosti mogle dodati bez promjene postojećeg koda. <br>
+NZ-06 Sustav mora biti microserviced i containerized; u Dockeru.
 
 ## Taskovi
 TASK-01 Napraviti model baze podataka za pohranu registriranih korisnika <br>
@@ -51,5 +52,5 @@ TASK-14 Mogućnost produljenja roka posudbe. <br>
 - Marin Pontoni : FZ-01, FZ-02, NZ-01, TASK-01 - TASK-05
 - Tibor Milković : FZ-03, FZ-04, NZ-02, TASK-06 - TASK-09
 - Zvonimir Šego : FZ-05, FZ-06, NZ-03, TASK-10, TASK-11
-- Marko Kovačić : FZ-07, FZ-08, NZ-04, TASK-12
+- Marko Kovačić : FZ-07, FZ-08, NZ-04, NZ-06, TASK-12
 - Krunoslav Lešić: FZ-09, FZ-10, NZ-05, TASK-13, TASK-14
