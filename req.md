@@ -9,17 +9,21 @@
 - Link: https://github.com/zvonimirsego/projekt_repo
 - Svi članovi dodani: DA
 ## User storyji
-US-01 Kao korisnik sustava, želim imati mogućnost registracije i prijave u sustav kako bih mu mogao pristupiti
+US-01 Kao korisnik sustava, želim imati mogućnost registracije i prijave u sustav kako bih mu mogao pristupiti. <br>
+US-02 Kao administrator, želim moći vidjeti popis sve dostupne opreme, sve posuđene opreme kao i tko je tu opremu posudio, te vrijeme posudbe kako bih mogao efikasnije upravljati svojim sustavom za posudbu opreme.
 
 ## Funkcijski zahtjevi
 FZ-01 Sustav mora imati mjesto za unos potrebnih podataka za registraciju novih korisnika. <br>
-FZ-02 Sustav mora imati mjesto za unos potrebnih podataka za prijavu već postojećeg korisnika. <b4>
+FZ-02 Sustav mora imati mjesto za unos potrebnih podataka za prijavu već postojećeg korisnika. <br>
 FZ-03 Sustav mora sprijeciti ponovnu registraciju vec postojeceg korisnika. <br>
-FZ-04 Sustav mora omoguciti korisniku povijest svih svojih dosadasnjih posudbi opreme.
+FZ-04 Sustav mora omoguciti korisniku povijest svih svojih dosadasnjih posudbi opreme. <br>
+FZ-05 Sustav mora prikazati popis slobodne opreme za posudbu. <br>
+FZ-06 Sustav mora prikazati popis posuđene opreme te kraj roka posudbe.
 
 ## Nefunkcijski zahtjevi
 NZ-01 Sustav mora obraditi prijavu korisnika u vremenskom roku od 2 sekunde. <br>
-NZ-02  Sustav mora bilježiti greške pri neuspjeloj rezervaciji.
+NZ-02  Sustav mora bilježiti greške pri neuspjeloj rezervaciji. <br>
+NZ-03 Sustav mora moći prebaciti novoposuđenu opremu s popisa slobodne na popis posuđene opreme u manje od 3 sekunde za 90% zahtjeva.
 
 ## Taskovi
 TASK-01 Napraviti model baze podataka za pohranu registriranih korisnika <br>
