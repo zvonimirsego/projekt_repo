@@ -15,4 +15,9 @@ US-02 Kao administrator, želim moći vidjeti popis sve dostupne opreme, sve pos
 
 ## Funkcijski zahtjevi
 
+FZ-05 Sustav mora prikazati popis slobodne opreme za posudbu.
+FZ-06 Sustav mora prikazati popis posuđene opreme te kraj roka posudbe.
+
 ## Nefunkcijski zahtjevi
+
+NZ-03 Sustav mora moći prebaciti novoposuđenu opremu s popisa slobodne na popis posuđene opreme u manje od 3 sekunde za 90% zahtjeva.
