@@ -28,7 +28,7 @@ FZ-10 Sustav mora spriječiti posudbu već posuđene opreme.           <br>
 NZ-01 Sustav mora obraditi prijavu korisnika u vremenskom roku od 2 sekunde. <br>
 NZ-02 Sustav mora bilježiti greške pri neuspjeloj rezervaciji. <br>
 NZ-03 Sustav mora moći prebaciti novoposuđenu opremu s popisa slobodne na popis posuđene opreme u manje od 3 sekunde za 90% zahtjeva. <br>
-NZ-4 Korsnik može otkazati posudbu maksimalno 12 h prije posudbe. <br> 
+NZ-04 Korsnik može otkazati posudbu maksimalno 12 h prije posudbe. <br> 
 NZ-05 Sustav mora biti dizajniran tako bi se nova oprema ili funkcionalnosti mogle dodati bez promjene postojećeg koda.
 
 ## Taskovi
@@ -41,3 +41,10 @@ TASK-06 Implementirati provjeru postojanja korisnika u bazi podataka prema e-mai
 TASK-07 Dizajnirati i programirati prikaz poruke o pogresci na sucelju za registraciju. <br>
 TASK-08 Napisati unit test koji provjerava odbija li sustav unos vec postojeceg e-maila. <br>
 TASK-09 Konfigurirati servis za zapisivanje (logging) gresaka u bazu ili datoteku. <br>
+
+## Raspodjela taskova
+- Marin Pontoni : FZ-05, FZ-06, NZ-04, TASK-03, TASK-05
+- Tibor Milković : FZ-01, FZ-07, NZ-03, TASK-02, TASK-06
+- Zvonimir Šego : FZ-02, FZ-03, NZ-01, TASK-01
+- Marko Kovačić : FZ-04, FZ-08, NZ-05, TASK-04, TASK-07
+- Krunoslav Lešić: FZ-09, FZ-10, NZ-02, TASK-08, TASK-09
