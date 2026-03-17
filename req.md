@@ -10,7 +10,7 @@
 - Svi članovi dodani: DA
 
 ## Funkcijski zahtjevi
-FZ-03 Sustav mora sprijeciti ponovnu registraciju vec postojeceg korisnika.
+FZ-03 Sustav mora sprijeciti ponovnu registraciju vec postojeceg korisnika. <br>
 FZ-04 Sustav mora omoguciti korisniku povijest svih svojih dosadasnjih posudbi opreme.
 
 ## Nefunkcijski zahtjevi
