@@ -45,16 +45,17 @@ TASK-05 [ADMIN] Omogućiti administratoru brisanje opreme iz inventara. <br>
 TASK-06 U bazu podataka dodati novu opremu i po potrebi obrisati. <br>
 TASK-07 Na glavnoj stranici postaviti popis sve dostupne opreme (fetchanje iz baze podataka). <br>
 TASK-08 Napraviti stranicu za pregled dosadašnjih posudbi jednog korisnika (fetchanje iz baze podataka po id). <br>
-TASK-09 [ADMIN] Napraviti stranicu za pregled svih posudbi (mogućnost povezivanja s TASK-07). <br>
+TASK-09 [ADMIN] Napraviti stranicu za pregled svih posudbi (mogućnost povezivanja s TASK-08). <br>
 TASK-10 Napraviti obrazac korisniku za posudbu opreme. Uključuje i unos trajanja posudbe. <br>
 TASK-11 Omogućiti korisniku produljavanje roka posudbe. <br>
 TASK-12 [ADMIN] Omogućiti uređenje posudbe. Uključuje i zapis o vraćanju opreme. <br>
 TASK-13 Slanje notifikacije (i korisniku koji je posudio kao i adminu) pri idućoj prijavi ukoliko je prekoračen rok posudbe. <br>
-TASK-14 [ADMIN] Omogućiti administratoru slanje e-maila u slučaju prekoračenja roka posudbe.
+TASK-14 [ADMIN] Omogućiti administratoru slanje e-maila u slučaju prekoračenja roka posudbe. <br>
+TASK-15 U bazi podataka napraviti tablicu za sve posudbe.
 
 ## Raspodjela taskova (TREBA PROMIJENITI NA IDUĆEM SASTANKU)
 - Marin Pontoni : FZ-01, FZ-02, NZ-01, TASK-01 - TASK-05
 - Tibor Milković : FZ-03, FZ-04, NZ-02, TASK-06 - TASK-09
-- Zvonimir Šego : FZ-05, FZ-06, NZ-03, TASK-10, TASK-11
+- Zvonimir Šego : FZ-03, FZ-04, FZ-06, NZ-03, TASK-03, TASK-06, TASK-15
 - Marko Kovačić : FZ-07, FZ-08, NZ-04, NZ-06, TASK-12
 - Krunoslav Lešić: FZ-09, FZ-10, NZ-05, TASK-13, TASK-14
