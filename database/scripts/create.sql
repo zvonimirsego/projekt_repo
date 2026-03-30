@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS equipment(
     id_equipment VARCHAR(10) PRIMARY KEY,
     equipment_name VARCHAR(100) NOT NULL,
     condition VARCHAR(20) CHECK (condition in ('new', 'used', 'heavily used', 'broken')),
-    available BOOLEAN NOT NULL DEFAULT false
+    available BOOLEAN NOT NULL DEFAULT true
 );
 
 CREATE TABLE IF NOT EXISTS loan(
@@ -23,4 +23,5 @@ CREATE TABLE IF NOT EXISTS loan(
     id_equipment VARCHAR(10) REFERENCES equipment(id_equipment),
     starting_date DATE DEFAULT CURRENT_DATE,
     due_date DATE
+    returned BOOLEAN NOT NULL DEFAULT false
 );
