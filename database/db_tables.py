@@ -1,7 +1,7 @@
 import os
 from datetime import date, timedelta
 from sqlmodel import create_engine, SQLModel, Field
-from sqlmodel import Session, select
+#from sqlmodel import Session, select
 
 path = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(path, "database.db")
