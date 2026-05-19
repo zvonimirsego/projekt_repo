@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from database.py_classes import Users
+from datetime import date
 
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -16,6 +17,12 @@ class UserInstance(BaseModel):
 # Specijalna Pydantic user instanca za updejtanje lozinke
 class UserUpdatePassword(BaseModel):
     password: str
+
+# Specijalna Pydantic loan instanca za stvaranje rezervacije
+class LoanCreate(BaseModel):
+    id_equipment: str
+    start_date: date
+    due_date: date
 
 # GET ruta, pretraživanje prema emailu korisnika
 @router.get("/{email}")
@@ -66,3 +73,26 @@ def update_user(email: str, data: UserUpdatePassword):
         raise HTTPException(status_code=404, detail="Korisnik ne postoji")
     user.update_password(data.password)
     return {"message": "Lozinka uspješno ažurirana"}
+
+@router.post("/{email}/loans")
+def make_reservation(email: str, data: LoanCreate):
+    user = Users.fetch(email)
+    if not user:
+        raise HTTPException(status_code=404, detail="Korisnik ne postoji")
+    
+    try:
+        user.makeReservation(data.id_equipment, data.start_date, data.due_date)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+    return {"message": "Rezervacija uspješno kreirana"}
+
+@router.delete("/{email}/loans/{id_loan}")
+def delete_reservation(email: str, id_loan: int):
+    user = Users.fetch(email)
+    if not user:
+        raise HTTPException(status_code=404, detail="Korisnik ne postoji")
+    result = user.deleteReservation(id_loan)
+    if not result:
+        raise HTTPException(status_code=404, detail="Rezervacija ne postoji")
+    return {"message": "Rezervacija uspješno obrisana"}

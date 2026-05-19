@@ -20,35 +20,36 @@ class Users:
         self.password = password
         self.is_admin = is_admin
 
-
+    # Morao sam dodati malu izmjenu kako bi se dostupnost opreme promjenila nakon posudbe, uz provjeru ako je dostupna
     def makeReservation(self, id_equipment, starting_date, due_date):
         with Session(db_engine) as session:
-            statement = select(DBLoan.id_loan).order_by(DBLoan.id_loan.desc())
-            last_id = session.exec(statement).first()
-            next_id = 1 if last_id is None else last_id + 1
+            # provjeri dostupnost
+            equipment = session.exec(select(DBEquipment).where(DBEquipment.id_equipment == id_equipment)).first()
+        if not equipment:
+            raise ValueError("Oprema ne postoji")
+        if not equipment.available:
+            raise ValueError("Oprema nije dostupna")
 
-            #ako cemo staviti da id_loan bude prvi slobodan
-            #   statement = select(DBLoan.id_loan).order_by(DBLoan.id_loan)
-            #   loan_ids = session.exec(statement).all()
-            #   next_id = 1
-            #   for existing_id in loan_ids:
-            #       if existing_id == next_id:
-            #           next_id += 1
-            #       else:
-            #           break
+        statement = select(DBLoan.id_loan).order_by(DBLoan.id_loan.desc())
+        last_id = session.exec(statement).first()
+        next_id = 1 if last_id is None else last_id + 1
 
-            db_loan = DBLoan(
-                id_loan=next_id,
-                id_user=self.email,
-                id_equipment=id_equipment,
-                start_date=starting_date,
-                due_date=due_date,
-                returned=False
-            )
-            session.add(db_loan)
-            session.commit()
+        db_loan = DBLoan(
+            id_loan=next_id,
+            id_user=self.email,
+            id_equipment=id_equipment,
+            start_date=starting_date,
+            due_date=due_date,
+            returned=False
+        )
+        session.add(db_loan)
 
-            return True
+        # postavi available na False
+        equipment.available = False
+        session.add(equipment)
+
+        session.commit()
+        return True
 
     def deleteReservation(self, id_loan):
         with Session(db_engine) as session:
@@ -128,6 +129,7 @@ class Admin(Users):
             )
             session.add(db_equipment)
             session.commit()
+            return db_equipment.id_equipment
 
     def editEquipment(self, id_equipment, equipment_name, condition, available):
         with Session(db_engine) as session:
@@ -160,3 +162,17 @@ class Equipment:
 
     def checkAvailability(self):
         return self.available
+
+    @staticmethod
+    def fetch(id_equipment):
+        with Session(db_engine) as session:
+            statement = select(DBEquipment).where(DBEquipment.id_equipment == id_equipment)
+            equipment = session.exec(statement).first()
+        if equipment:
+            return Equipment(
+                id_equipment=equipment.id_equipment,
+                equipment_name=equipment.equipment_name,
+                condition=equipment.condition,
+                available=equipment.available
+            )
+        return None
