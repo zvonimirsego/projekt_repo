@@ -1,4 +1,4 @@
-from db_tables import db_engine, Users as DBUsers, Loan as DBLoan, Equipment as DBEquipment
+from database.db_tables import db_engine, Users as DBUsers, Loan as DBLoan, Equipment as DBEquipment
 from sqlmodel import Session, select
 
 
@@ -73,6 +73,25 @@ class Users:
                 is_admin=self.is_admin
             )
             session.add(db_user)
+            session.commit()
+
+    # Briše usera iz baze
+    def delete(self):
+        with Session(db_engine) as session:
+            statement = select(DBUsers).where(DBUsers.id_email == self.email)
+            user = session.exec(statement).first()
+        if user:
+            session.delete(user)
+            session.commit()
+            
+    # Mijenja korisnikovu lozinku
+    def update_password(self, password):
+        with Session(db_engine) as session:
+            statement = select(DBUsers).where(DBUsers.id_email == self.email)
+            user = session.exec(statement).first()
+        if user:
+            user.password = password
+            session.add(user)
             session.commit()
 
     @staticmethod
