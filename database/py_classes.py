@@ -19,7 +19,7 @@ class Loan:
         with Session(db_engine) as session:
             statement = select(DBLoan.id_loan).order_by(DBLoan.id_loan.desc())
             last_id = session.exec(statement).first()
-            brojac = 1 if last_id is None else last_id + 1
+            Loan.brojac = Loan.brojac + 1 if last_id is None else last_id + 1
     
     @staticmethod
     def fetch(id_loan):
