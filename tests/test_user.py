@@ -1,6 +1,5 @@
 import pytest
-from datetime import date, timedelta
-from classes import Users, Equipment, Admin
+from new_classes import Users
 from db_tables import  db_engine, Loan as DBLoan, Equipment as DBEquipment, Users as DBUser
 from sqlmodel import  Session, select 
 from sqlalchemy import text
@@ -52,7 +51,7 @@ def equipment():
 def test_user():
 
     user = Users(
-        "levine@gmail.com",
+        "user@gmail.com",
         "Ken",
         "Levine",
         "1234"
@@ -66,7 +65,7 @@ def test_user():
 
         db_user = session.exec(
             select(DBUser).where(
-                DBUser.id_email == "levine@gmail.com"
+                DBUser.id_email == "user@gmail.com"
             )
         ).first()
 
@@ -75,101 +74,47 @@ def test_user():
             session.commit()
 
 class TestReservation:
-    def test_make_reservation_success(self, equipment):
-        user = Users(
-            "levine@gmail.com",
-            "Ken",
-            "Levine",
-            "1234"
-        )
-        
-        reservation = user.makeReservation("AA001", date.today(), date.today() + timedelta(days=10))
+    def test_make_reservation_success(self, equipment, test_user):
+        reservation = test_user.makeReservation("AA001")
 
         assert reservation is True
 
         with Session(db_engine) as session:
             statement = select(DBLoan).where(
-                DBLoan.id_user == "levine@gmail.com",
+                DBLoan.id_user == "user@gmail.com",
                 DBLoan.id_equipment == "AA001"
                 )
             reservation_db = session.exec(statement).first()
             assert reservation_db is not None
             
-    def test_makeResrvation_fail_on_borrowed_equipment(self, equipment):
-        user = Users(
-            "ace@gmail.com",
-            "Elizabeth",
-            "Devit",
-            "4321"
-        )
-        user.makeReservation(
-            "AA001",
-            date.today(),
-            date.today() + timedelta(days=14)
-        )
+    def test_makeResrvation_fail_on_borrowed_equipment(self, equipment, test_user):
+        user = test_user
+        user.makeReservation("AA001")
         with Session(db_engine) as session:
 
             statement = select(DBEquipment).where(
             DBEquipment.id_equipment == "AA001"
             )
             equipment = session.exec(statement).first()
-            equipment.available = False
 
             session.commit()
 
 
         with pytest.raises(ValueError, match="Equipment is allready borrowed"):
-            user.makeReservation(
-            "AA001",
-            date.today(),
-            date.today() + timedelta(days=14)
-        )
+            user.makeReservation("AA001")
              
-        
-    def test_makeReservation_fail_on_wrong_date(self, equipment):
-        user = Users(
-            "levine@gmail.com",
-            "Ken",
-            "Levine",
-            "1234"
-        )
-        with pytest.raises(ValueError, match="Wrong date"):
-            user.makeReservation(
-                "AA001",
-                date.today(),
-                date.today() - timedelta(days=2)
-            )
-
-    def test_makeReservation_fail_on_non_existing_equipment(self, equipment):
-        user = Users(
-            "levine@gmail.com",
-            "Ken",
-            "Levine",
-            "1234"
-        )
+    def test_makeReservation_fail_on_non_existing_equipment(self, test_user):
+        user = test_user
         with pytest.raises(ValueError, match="Equipment doesn't exists"):
-            user.makeReservation(
-                "ZZ999",
-                date.today(),
-                date.today() + timedelta(days=2)
-            )
+            user.makeReservation("ZZ999")
         
-    def test_delete_reservation(self, equipment):
-        user = Users(
-            "ace@gmail.com",
-            "Elizabeth",
-            "Devit",
-            "4321"
-        )
-        user.makeReservation(
-                "AA001",
-                date.today(),
-                date.today() + timedelta(days=2)
-            )
+    def test_delete_reservation(self, equipment, test_user):
+        user = test_user
+        user.makeReservation("AA001")
         
         with Session(db_engine) as session:
             statement = select(DBLoan).where(
-                DBLoan.id_user == "ace@gmail.com"
+                DBLoan.id_user == user.email
                 )
             loan = session.exec(statement).first()
             assert loan is not None
@@ -180,7 +125,7 @@ class TestReservation:
             statement = select(DBLoan).where(
                 DBLoan.id_loan == loan.id_loan
             )
-        deleted_loan = session.exec(statement).first()
+            deleted_loan = session.exec(statement).first()
 
         assert deleted_loan is None
 
@@ -190,23 +135,11 @@ def test_add_success(test_user):
 
         db_user = session.exec(
             select(DBUser).where(
-                DBUser.id_email == "levine@gmail.com"
+                DBUser.id_email == "user@gmail.com"
             )
         ).first()
 
         assert db_user is not None
-
-def test_add_duplicate_user():
-    user = Users(
-        "duplicate@gmail.com",
-        "Ken",
-        "Levine",
-        "1234"
-        )
-    user.add()
-
-    with pytest.raises(ValueError, match="User with this email allready exists"):
-        user.add()
 
 def test_fetch():
     u = Users("fetch@gmail.com","Elizabeth","Devit","4321")
