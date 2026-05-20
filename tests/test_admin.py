@@ -1,6 +1,9 @@
 import pytest
-from new_classes import Admin
-from db_tables import db_engine, Equipment as DBEquipment
+from classes import Admin
+from db_tables import (
+    db_engine,
+    Equipment as DBEquipment
+)
 from sqlmodel import Session, select
 from sqlalchemy import text
 
