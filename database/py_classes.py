@@ -66,6 +66,13 @@ class Users:
     def add(self):
         #Dodaje usera u bazu
         with Session(db_engine) as session:
+            existing = session.exec(select(DBUsers).where(
+                DBUsers.id_email == self.email
+            )).first()
+
+            if existing:
+                raise ValueError("Korisnik sa ovim email-om već postoji")
+            
             db_user = DBUsers(
                 id_email=self.email,
                 first_name=self.first_name,

@@ -1,6 +1,6 @@
 import pytest
-from classes import Admin
-from db_tables import db_engine, Equipment as DBEquipment
+from database.py_classes import Admin, Users
+from database.db_tables import db_engine, Equipment as DBEquipment
 from sqlmodel import Session, select
 from sqlalchemy import text
 
@@ -36,7 +36,11 @@ def clean_db():
 # ---------- TESTS ----------
 
 class TestAdmin:
+    def test_admin_is_user(self, admin):
+        assert isinstance(admin, Users)
 
+    def test_admin_init(self, admin):
+        assert admin.is_admin is True
 
     def test_admin_init(self, admin):
         assert admin.is_admin is True
