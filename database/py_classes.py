@@ -1,4 +1,4 @@
-from db_tables import db_engine, Users as DBUsers, Loan as DBLoan, Equipment as DBEquipment, db_reset
+from .db_tables import db_engine, Users as DBUsers, Loan as DBLoan, Equipment as DBEquipment, db_reset
 from sqlmodel import Session, select
 from datetime import date, timedelta
 
@@ -61,15 +61,11 @@ class Users:
         self.is_admin = is_admin
 
 
-    def makeReservation(self, id_equipment, starting_date=date.today(), due_date=date.today() + timedelta(days=14)):
-        loan = Loan(self.email, id_equipment, starting_date, due_date, False)
-        # ovo je lokalna verzija posudbe, "klikom" na potvrdu cemo pushati na bazu. Tu bi se "uredjivale stvari na stranici".
-        
+    def makeReservation(self, id_equipment, starting_date, due_date):
         with Session(db_engine) as session:
-            # Mozda dodje korisno kasnije
-            # statement = select(DBLoan.id_loan).order_by(DBLoan.id_loan.desc())
-            # last_id = session.exec(statement).first()
-            # next_id = 1 if last_id is None else last_id + 1
+            statement = select(DBLoan.id_loan).order_by(DBLoan.id_loan.desc())
+            last_id = session.exec(statement).first()
+            next_id = 1 if last_id is None else last_id + 1
 
             #ako cemo staviti da id_loan bude prvi slobodan
             #   statement = select(DBLoan.id_loan).order_by(DBLoan.id_loan)
@@ -80,24 +76,25 @@ class Users:
             #           next_id += 1
             #       else:
             #           break
-
-            equipment = session.exec(select(DBEquipment).where(DBEquipment.id_equipment == id_equipment)).first()
-            if equipment is None:
-                raise ValueError("Equipment doesn't exists")
             
+            equipment = session.exec(
+                select(DBEquipment).where(DBEquipment.id_equipment == id_equipment)
+            ).first()
+            if not equipment:
+                raise ValueError("Oprema ne postoji")
             if not equipment.available:
-                raise ValueError("Equipment is allready borrowed")
-            
+                raise ValueError("Oprema nije dostupna")
+            equipment.available = False
+
             db_loan = DBLoan(
-                id_loan=loan.id_loan,
-                id_user=loan.id_user,
-                id_equipment=loan.id_equipment,
-                start_date=loan.starting_date,
-                due_date=loan.due_date,
-                returned=loan.returned
+                id_loan=next_id,
+                id_user=self.email,
+                id_equipment=id_equipment,
+                start_date=starting_date,
+                due_date=due_date,
+                returned=False
             )
             session.add(db_loan)
-            equipment.available = False
             session.commit()
 
             return True
@@ -117,15 +114,7 @@ class Users:
     #dodati naredbu za fetch i za addanje u bazu
 
     def add(self):
-        #Dodaje usera u bazu
         with Session(db_engine) as session:
-            existing = session.exec(select(DBUsers).where(
-                DBUsers.id_email == self.email
-            )).first()
-
-            if existing:
-                raise ValueError("User with this email allready exists")
-            
             db_user = DBUsers(
                 id_email=self.email,
                 first_name=self.first_name,
@@ -133,7 +122,31 @@ class Users:
                 password=self.password,
                 is_admin=self.is_admin
             )
-            session.add(db_user)
+            try:
+                session.add(db_user)
+                session.commit()
+            except Exception as e:
+                if "UNIQUE constraint failed: users.id_email" in str(e):
+                    raise ValueError("Korisnik sa ovim email-om već postoji")
+                raise
+
+    # Briše usera iz baze
+    def delete(self):
+        with Session(db_engine) as session:
+            statement = select(DBUsers).where(DBUsers.id_email == self.email)
+            user = session.exec(statement).first()
+        if user:
+            session.delete(user)
+            session.commit()
+            
+    # Mijenja korisnikovu lozinku
+    def update_password(self, password):
+        with Session(db_engine) as session:
+            statement = select(DBUsers).where(DBUsers.id_email == self.email)
+            user = session.exec(statement).first()
+        if user:
+            user.password = password
+            session.add(user)
             session.commit()
 
     @staticmethod
@@ -187,6 +200,7 @@ class Admin(Users):
             )
             session.add(db_equipment)
             session.commit()
+            return db_equipment.id_equipment
 
     def editEquipment(self, id_equipment, equipment_name, condition, available):
         equipment_local = Equipment(id_equipment=id_equipment, equipment_name=equipment_name, condition=condition, available=available)
@@ -224,18 +238,6 @@ class Equipment:
     def checkAvailability(self):
         return self.available
     
-    def add(self):
-        with Session(db_engine) as session:
-            db_equipment = DBEquipment(
-                id_equipment=self.id_equipment,
-                equipment_name=self.equipment_name,
-                condition=self.condition,
-                available=self.available
-            )
-            session.add(db_equipment)
-            session.commit()
-    
-    @staticmethod
     def fetch(id_equipment):
         with Session(db_engine) as session:
             statement = select(DBEquipment).where(DBEquipment.id_equipment == id_equipment)
@@ -248,29 +250,3 @@ class Equipment:
                     available=equipment.available
                 )
             return None
-    
-    @staticmethod
-    def fetch_all():
-        with Session(db_engine) as session:
-            statement = select(DBEquipment)
-            equipment_list = session.exec(statement).all()
-            return [Equipment(
-                id_equipment=equipment.id_equipment,
-                equipment_name=equipment.equipment_name,
-                condition=equipment.condition,
-                available=equipment.available
-            ) for equipment in equipment_list]
-
-if __name__ == "__main__":
-    db_reset()
-    user = Users(email="zsego@university.hr", first_name="Zvonimir", last_name="Šego", password="password123")
-    equipment = Equipment(id_equipment="EQ001", equipment_name="Busilica", condition="new", available=True)
-    user.add()
-    equipment.add()
-    user.makeReservation(id_equipment="EQ001")
-    equipment2 = Equipment(id_equipment="EQ002", equipment_name="Čekić", condition="used", available=True)
-    equipment2.add()
-    user.makeReservation(id_equipment="EQ002")
-    loans = Loan.fetch_all()
-    for loan in loans:
-        print(f"Loan ID: {loan.id_loan}, User: {loan.id_user}, Equipment: {loan.id_equipment}, Start: {loan.starting_date}, Due: {loan.due_date}, Returned: {loan.returned}")
