@@ -65,5 +65,3 @@ if __name__ == "__main__":
     #    statement = select(Loan)
     #    loan = session.exec(statement).first()
     #    print(loan)
-
-    print("DB reset")

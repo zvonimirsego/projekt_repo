@@ -103,16 +103,16 @@ class Users:
             return True
 
     def deleteReservation(self, id_loan):
-        with Session(db_engine) as session:
-            statement = select(DBLoan).where(DBLoan.id_loan == id_loan, DBLoan.id_user == self.email)
-            loan = session.exec(statement).first()
-            if equipment:
-                equipment.available = True
-            if loan:
-                session.delete(loan)
-                session.commit()
-                return True
-            return False
+        loan_local = Loan.fetch(id_loan)
+        if loan_local and loan_local.id_user == self.email and loan_local.starting_date < date.today():
+            with Session(db_engine) as session:
+                statement = select(DBLoan).where(DBLoan.id_loan == id_loan, DBLoan.id_user == self.email)
+                loan = session.exec(statement).first()
+                if loan:
+                    session.delete(loan)
+                    session.commit()
+                    return True
+                return False
 
     #dodati naredbu za fetch i za addanje u bazu
 
@@ -151,42 +151,60 @@ class Users:
                     is_admin=user.is_admin
                 )
             return None
+    
+    @staticmethod
+    def fetch_all():
+        #Dohvaća sve usere iz baze
+        with Session(db_engine) as session:
+            statement = select(DBUsers)
+            user_list = session.exec(statement).all()
+            return [Users(
+                email=user.id_email,
+                first_name=user.first_name,
+                last_name=user.last_name,
+                password=user.password,
+                is_admin=user.is_admin
+            ) for user in user_list]
 
 class Admin(Users):
     def __init__(self, email, first_name, last_name, password):
         super().__init__(email, first_name, last_name, password, is_admin=True)
 
     def addEquipment(self, equipment_name, condition):
+        equipment_local = Equipment(id_equipment=None, equipment_name=equipment_name, condition=condition, available=True)
+        
         with Session(db_engine) as session:
             statement = select(DBEquipment.id_equipment).order_by(DBEquipment.id_equipment.desc())
             last_id = session.exec(statement).first()
             next_id = "EQ001" if last_id is None else f"EQ{int(last_id[2:]) + 1:03d}"
+            equipment_local.id_equipment = next_id
 
             db_equipment = DBEquipment(
-                id_equipment=next_id,
-                equipment_name=equipment_name,
-                condition=condition,
-                available=True
+                id_equipment=equipment_local.id_equipment,
+                equipment_name=equipment_local.equipment_name,
+                condition=equipment_local.condition,
+                available=equipment_local.available
             )
             session.add(db_equipment)
             session.commit()
 
     def editEquipment(self, id_equipment, equipment_name, condition, available):
+        equipment_local = Equipment(id_equipment=id_equipment, equipment_name=equipment_name, condition=condition, available=available)
         with Session(db_engine) as session:
-            statement = select(DBEquipment).where(DBEquipment.id_equipment == id_equipment)
-            equipment = session.exec(statement).first()
-            if equipment:
-                equipment.equipment_name = equipment_name
-                equipment.condition = condition
-                equipment.available = available
+            statement = select(DBEquipment).where(DBEquipment.id_equipment == equipment_local.id_equipment)
+            equipment_db = session.exec(statement).first()
+            if equipment_db:
+                equipment_db.equipment_name = equipment_local.equipment_name
+                equipment_db.condition = equipment_local.condition
+                equipment_db.available = equipment_local.available
                 session.commit()
 
     def deleteEquipment(self, id_equipment):
         with Session(db_engine) as session:
             statement = select(DBEquipment).where(DBEquipment.id_equipment == id_equipment)
-            equipment = session.exec(statement).first()
-            if equipment:
-                session.delete(equipment)
+            equipment_db = session.exec(statement).first()
+            if equipment_db:
+                session.delete(equipment_db)
                 session.commit()
 
     def sendWarning(self, id_loan):
