@@ -1,11 +1,11 @@
 import pytest
 from fastapi.testclient import TestClient
-from sqlmodel import Session, select
+from sqlmodel import Session
 from sqlalchemy import text
 
 from server.main import app
 from database.py_classes import Admin
-from database.db_tables import db_engine, Equipment as DBEquipment
+from database.db_tables import db_engine
 
 client = TestClient(app)
 

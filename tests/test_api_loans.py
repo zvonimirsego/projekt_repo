@@ -72,8 +72,7 @@ def test_make_reservation_equipment_unavailable(user_and_equipment):
     first = client.post(f"/users/{email}/loans", json=body)
     assert first.status_code == 200
 
-
-    # Druga rezervacija (bi trebala biti) neuspješna jer je oprema već rezervirana 
+    # Druga rezervacija (bi trebala biti) neuspješna jer je oprema već rezervirana
     second = client.post(f"/users/{email}/loans", json=body)
     assert second.status_code == 400
     assert second.json()["detail"] == "Oprema nije dostupna"

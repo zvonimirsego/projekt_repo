@@ -1,7 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from database.py_classes import Equipment
 
-
 router = APIRouter(prefix="/equipment", tags=["Equipment"])
 
 
