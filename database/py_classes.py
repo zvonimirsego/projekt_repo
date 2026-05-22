@@ -17,7 +17,7 @@ class Loan:
         self.starting_date = starting_date
         self.due_date = due_date
         self.returned = returned
-    
+
     @staticmethod
     def fetch(id_loan):
         with Session(db_engine) as session:
@@ -208,7 +208,7 @@ class Equipment:
 
     def checkAvailability(self):
         return self.available
-    
+
     @staticmethod
     def fetch(id_equipment):
         with Session(db_engine) as session:
