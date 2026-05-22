@@ -1,4 +1,3 @@
-import pytest
 from database.py_classes import Equipment
 
 

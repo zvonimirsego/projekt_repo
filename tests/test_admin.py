@@ -39,9 +39,6 @@ class TestAdmin:
     def test_admin_init(self, admin):
         assert admin.is_admin is True
 
-    def test_admin_init(self, admin):
-        assert admin.is_admin is True
-
     def test_add_equipment(self, admin):
 
         admin.addEquipment("projektor", "new")

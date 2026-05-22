@@ -36,12 +36,12 @@ jobs:
           pip install -r requirements.txt
 
 
-      - name: Run Ruff (lint)
+      - name: Run Ruff 
         run: |
           ruff check .
 
 
-      - name: Run Black (format check)
+      - name: Run Black
         run: |
           black --check .
 

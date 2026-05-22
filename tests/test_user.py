@@ -107,9 +107,6 @@ class TestReservation:
         user.makeReservation("AA001", date.today(), date.today() + timedelta(days=14))
         with Session(db_engine) as session:
 
-            statement = select(DBEquipment).where(DBEquipment.id_equipment == "AA001")
-            equipment = session.exec(statement).first()
-
             session.commit()
 
         with pytest.raises(ValueError, match="Oprema nije dostupna"):
