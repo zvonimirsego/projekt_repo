@@ -7,7 +7,7 @@ __pycache__/
 *.pyd
 .pytest_cache/
 
-# database/database.db <- using dev data
+# database/database.db <- uncomment to exclude dev DB from image
 
 .git/
 .gitignore
