@@ -1,4 +1,4 @@
-from db_tables import db_engine, Users as DBUsers, Loan as DBLoan, Equipment as DBEquipment, db_reset
+from .db_tables import db_engine, Users as DBUsers, Loan as DBLoan, Equipment as DBEquipment, db_reset
 from sqlmodel import Session, select
 from datetime import date, timedelta
 
