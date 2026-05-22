@@ -64,7 +64,6 @@ class Users:
     #dodati naredbu za fetch i za addanje u bazu
 
     def add(self):
-        #Dodaje usera u bazu
         with Session(db_engine) as session:
             existing = session.exec(select(DBUsers).where(
                 DBUsers.id_email == self.email
@@ -80,8 +79,13 @@ class Users:
                 password=self.password,
                 is_admin=self.is_admin
             )
-            session.add(db_user)
-            session.commit()
+            try:
+                session.add(db_user)
+                session.commit()
+            except Exception as e:
+                if "UNIQUE constraint failed: users.id_email" in str(e):
+                    raise ValueError("Korisnik sa ovim email-om već postoji")
+                raise
 
     # Briše usera iz baze
     def delete(self):
