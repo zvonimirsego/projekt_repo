@@ -99,17 +99,18 @@ class Users:
 
             return True
 
-    def deleteReservation(self, id_loan):
-        loan_local = Loan.fetch(id_loan)
-        if loan_local and loan_local.id_user == self.email and loan_local.starting_date < date.today():
-            with Session(db_engine) as session:
-                statement = select(DBLoan).where(DBLoan.id_loan == id_loan, DBLoan.id_user == self.email)
-                loan = session.exec(statement).first()
-                if loan:
-                    session.delete(loan)
-                    session.commit()
-                    return True
+    def deleteReservation(self, loan_id):
+        with Session(db_engine) as session:
+            statement = select(DBLoan).where(
+                DBLoan.id_loan == loan_id,
+                DBLoan.id_user == self.email
+            )
+            loan = session.exec(statement).first()
+            if not loan:
                 return False
+            session.delete(loan)
+            session.commit()
+            return True
 
     #dodati naredbu za fetch i za addanje u bazu
 
@@ -238,6 +239,7 @@ class Equipment:
     def checkAvailability(self):
         return self.available
     
+    @staticmethod
     def fetch(id_equipment):
         with Session(db_engine) as session:
             statement = select(DBEquipment).where(DBEquipment.id_equipment == id_equipment)
