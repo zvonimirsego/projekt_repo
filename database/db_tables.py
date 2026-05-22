@@ -30,16 +30,13 @@ class Loan(SQLModel, table=True):
     due_date: date | None = Field(default_factory=lambda: date.today() + timedelta(days=14))
     returned: bool | None = False
 
-def db_reset():
+if __name__ == "__main__":
     with open(reset_script_path, "r", encoding="utf-8") as file:
         sql_script = file.read()
 
     with db_engine.raw_connection() as connection:
         connection.executescript(sql_script)
         connection.commit()
-
-if __name__ == "__main__":
-    db_reset()
     
     # zsego = Users(id_email="zsego@university.hr", first_name="Zvonimir", last_name="Šego", password="password123")
     # busilica = Equipment(id_equipment="EQ001", equipment_name="Busilica", condition="new")
@@ -65,3 +62,5 @@ if __name__ == "__main__":
     #    statement = select(Loan)
     #    loan = session.exec(statement).first()
     #    print(loan)
+
+    print("DB reset")
