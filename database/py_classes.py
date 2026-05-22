@@ -238,6 +238,7 @@ class Equipment:
     def checkAvailability(self):
         return self.available
     
+    @staticmethod
     def fetch(id_equipment):
         with Session(db_engine) as session:
             statement = select(DBEquipment).where(DBEquipment.id_equipment == id_equipment)
