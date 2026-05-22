@@ -6,12 +6,12 @@ from datetime import date
 @pytest.fixture
 def loan():
     loan = Loan(
-        "1111",
-        "user@gmail.com",
-        "EQ001",
-        date.today(),
-        date.today(),
-        False
+        id_user="user@gmail.com",
+        id_equipment="EQ001",
+        starting_date=date.today(),
+        due_date=date.today(),
+        returned=False,
+        id_loan="1111"
     )
     return loan
 

@@ -76,6 +76,15 @@ class Users:
             #           next_id += 1
             #       else:
             #           break
+            
+            equipment = session.exec(
+                select(DBEquipment).where(DBEquipment.id_equipment == id_equipment)
+            ).first()
+            if not equipment:
+                raise ValueError("Oprema ne postoji")
+            if not equipment.available:
+                raise ValueError("Oprema nije dostupna")
+            equipment.available = False
 
             db_loan = DBLoan(
                 id_loan=next_id,
@@ -105,7 +114,6 @@ class Users:
     #dodati naredbu za fetch i za addanje u bazu
 
     def add(self):
-        #Dodaje usera u bazu
         with Session(db_engine) as session:
             db_user = DBUsers(
                 id_email=self.email,
@@ -114,8 +122,13 @@ class Users:
                 password=self.password,
                 is_admin=self.is_admin
             )
-            session.add(db_user)
-            session.commit()
+            try:
+                session.add(db_user)
+                session.commit()
+            except Exception as e:
+                if "UNIQUE constraint failed: users.id_email" in str(e):
+                    raise ValueError("Korisnik sa ovim email-om već postoji")
+                raise
 
     # Briše usera iz baze
     def delete(self):
@@ -224,3 +237,16 @@ class Equipment:
 
     def checkAvailability(self):
         return self.available
+    
+    def fetch(id_equipment):
+        with Session(db_engine) as session:
+            statement = select(DBEquipment).where(DBEquipment.id_equipment == id_equipment)
+            equipment = session.exec(statement).first()
+            if equipment:
+                return Equipment(
+                    id_equipment=equipment.id_equipment,
+                    equipment_name=equipment.equipment_name,
+                    condition=equipment.condition,
+                    available=equipment.available
+                )
+            return None
