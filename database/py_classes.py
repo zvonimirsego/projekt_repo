@@ -16,7 +16,10 @@ class Loan:
         self.starting_date = starting_date
         self.due_date = due_date
         self.returned = returned
-        Loan.brojac += 1
+        with Session(db_engine) as session:
+            statement = select(DBLoan.id_loan).order_by(DBLoan.id_loan.desc())
+            last_id = session.exec(statement).first()
+            Loan.brojac = Loan.brojac + 1 if last_id is None else last_id + 1
     
     @staticmethod
     def fetch(id_loan):
@@ -78,6 +81,13 @@ class Users:
             #       else:
             #           break
 
+            equipment = session.exec(select(DBEquipment).where(DBEquipment.id_equipment == id_equipment)).first()
+            if equipment is None:
+                raise ValueError("Equipment doesn't exists")
+            
+            if not equipment.available:
+                raise ValueError("Equipment is allready borrowed")
+            
             db_loan = DBLoan(
                 id_loan=loan.id_loan,
                 id_user=loan.id_user,
@@ -87,6 +97,7 @@ class Users:
                 returned=loan.returned
             )
             session.add(db_loan)
+            equipment.available = False
             session.commit()
 
             return True
@@ -108,6 +119,13 @@ class Users:
     def add(self):
         #Dodaje usera u bazu
         with Session(db_engine) as session:
+            existing = session.exec(select(DBUsers).where(
+                DBUsers.id_email == self.email
+            )).first()
+
+            if existing:
+                raise ValueError("User with this email allready exists")
+            
             db_user = DBUsers(
                 id_email=self.email,
                 first_name=self.first_name,

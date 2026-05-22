@@ -38,7 +38,9 @@ def db_reset():
         connection.executescript(sql_script)
         connection.commit()
 
-if __name__ == "__main__":    
+if __name__ == "__main__":
+    db_reset()
+    
     # zsego = Users(id_email="zsego@university.hr", first_name="Zvonimir", last_name="Šego", password="password123")
     # busilica = Equipment(id_equipment="EQ001", equipment_name="Busilica", condition="new")
     # loan1 = Loan(id_loan=1, id_user="zsego@university.hr", id_equipment="EQ001")
@@ -63,5 +65,3 @@ if __name__ == "__main__":
     #    statement = select(Loan)
     #    loan = session.exec(statement).first()
     #    print(loan)
-
-    db_reset()
