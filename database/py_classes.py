@@ -1,9 +1,16 @@
-from database.db_tables import db_engine, Users as DBUsers, Loan as DBLoan, Equipment as DBEquipment
+from database.db_tables import (
+    db_engine,
+    Users as DBUsers,
+    Loan as DBLoan,
+    Equipment as DBEquipment,
+)
 from sqlmodel import Session, select
 
 
 class Loan:
-    def __init__(self, id_loan, id_user, id_equipment, starting_date, due_date, returned):
+    def __init__(
+        self, id_loan, id_user, id_equipment, starting_date, due_date, returned
+    ):
         self.id_loan = id_loan
         self.id_user = id_user
         self.id_equipment = id_equipment
@@ -11,9 +18,10 @@ class Loan:
         self.due_date = due_date
         self.returned = returned
 
+
 class Users:
     def __init__(self, email, first_name, last_name, password, is_admin=False):
-        #za is_admin vidjeti file na desktopu
+        # za is_admin vidjeti file na desktopu
         self.email = email
         self.first_name = first_name
         self.last_name = last_name
@@ -24,7 +32,9 @@ class Users:
     def makeReservation(self, id_equipment, starting_date, due_date):
         with Session(db_engine) as session:
             # provjeri dostupnost
-            equipment = session.exec(select(DBEquipment).where(DBEquipment.id_equipment == id_equipment)).first()
+            equipment = session.exec(
+                select(DBEquipment).where(DBEquipment.id_equipment == id_equipment)
+            ).first()
         if not equipment:
             raise ValueError("Oprema ne postoji")
         if not equipment.available:
@@ -40,7 +50,7 @@ class Users:
             id_equipment=id_equipment,
             start_date=starting_date,
             due_date=due_date,
-            returned=False
+            returned=False,
         )
         session.add(db_loan)
 
@@ -53,7 +63,9 @@ class Users:
 
     def deleteReservation(self, id_loan):
         with Session(db_engine) as session:
-            statement = select(DBLoan).where(DBLoan.id_loan == id_loan, DBLoan.id_user == self.email)
+            statement = select(DBLoan).where(
+                DBLoan.id_loan == id_loan, DBLoan.id_user == self.email
+            )
             loan = session.exec(statement).first()
             if loan:
                 session.delete(loan)
@@ -61,23 +73,23 @@ class Users:
                 return True
             return False
 
-    #dodati naredbu za fetch i za addanje u bazu
+    # dodati naredbu za fetch i za addanje u bazu
 
     def add(self):
         with Session(db_engine) as session:
-            existing = session.exec(select(DBUsers).where(
-                DBUsers.id_email == self.email
-            )).first()
+            existing = session.exec(
+                select(DBUsers).where(DBUsers.id_email == self.email)
+            ).first()
 
             if existing:
                 raise ValueError("Korisnik sa ovim email-om već postoji")
-            
+
             db_user = DBUsers(
                 id_email=self.email,
                 first_name=self.first_name,
                 last_name=self.last_name,
                 password=self.password,
-                is_admin=self.is_admin
+                is_admin=self.is_admin,
             )
             try:
                 session.add(db_user)
@@ -95,7 +107,7 @@ class Users:
         if user:
             session.delete(user)
             session.commit()
-            
+
     # Mijenja korisnikovu lozinku
     def update_password(self, password):
         with Session(db_engine) as session:
@@ -108,7 +120,7 @@ class Users:
 
     @staticmethod
     def fetch(email):
-        #Dohvaća user iz baze po email-u
+        # Dohvaća user iz baze po email-u
         with Session(db_engine) as session:
             statement = select(DBUsers).where(DBUsers.id_email == email)
             user = session.exec(statement).first()
@@ -118,9 +130,10 @@ class Users:
                     first_name=user.first_name,
                     last_name=user.last_name,
                     password=user.password,
-                    is_admin=user.is_admin
+                    is_admin=user.is_admin,
                 )
             return None
+
 
 class Admin(Users):
     def __init__(self, email, first_name, last_name, password):
@@ -128,7 +141,9 @@ class Admin(Users):
 
     def addEquipment(self, equipment_name, condition):
         with Session(db_engine) as session:
-            statement = select(DBEquipment.id_equipment).order_by(DBEquipment.id_equipment.desc())
+            statement = select(DBEquipment.id_equipment).order_by(
+                DBEquipment.id_equipment.desc()
+            )
             last_id = session.exec(statement).first()
             next_id = "EQ001" if last_id is None else f"EQ{int(last_id[2:]) + 1:03d}"
 
@@ -136,7 +151,7 @@ class Admin(Users):
                 id_equipment=next_id,
                 equipment_name=equipment_name,
                 condition=condition,
-                available=True
+                available=True,
             )
             session.add(db_equipment)
             session.commit()
@@ -144,7 +159,9 @@ class Admin(Users):
 
     def editEquipment(self, id_equipment, equipment_name, condition, available):
         with Session(db_engine) as session:
-            statement = select(DBEquipment).where(DBEquipment.id_equipment == id_equipment)
+            statement = select(DBEquipment).where(
+                DBEquipment.id_equipment == id_equipment
+            )
             equipment = session.exec(statement).first()
             if equipment:
                 equipment.equipment_name = equipment_name
@@ -154,7 +171,9 @@ class Admin(Users):
 
     def deleteEquipment(self, id_equipment):
         with Session(db_engine) as session:
-            statement = select(DBEquipment).where(DBEquipment.id_equipment == id_equipment)
+            statement = select(DBEquipment).where(
+                DBEquipment.id_equipment == id_equipment
+            )
             equipment = session.exec(statement).first()
             if equipment:
                 session.delete(equipment)
@@ -162,7 +181,7 @@ class Admin(Users):
 
     def sendWarning(self):
         pass
-    
+
 
 class Equipment:
     def __init__(self, id_equipment, equipment_name, condition, available):
@@ -177,13 +196,15 @@ class Equipment:
     @staticmethod
     def fetch(id_equipment):
         with Session(db_engine) as session:
-            statement = select(DBEquipment).where(DBEquipment.id_equipment == id_equipment)
+            statement = select(DBEquipment).where(
+                DBEquipment.id_equipment == id_equipment
+            )
             equipment = session.exec(statement).first()
         if equipment:
             return Equipment(
                 id_equipment=equipment.id_equipment,
                 equipment_name=equipment.equipment_name,
                 condition=equipment.condition,
-                available=equipment.available
+                available=equipment.available,
             )
         return None

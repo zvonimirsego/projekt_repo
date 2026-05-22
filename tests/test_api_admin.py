@@ -37,8 +37,7 @@ def test_add_equipment():
     assert body["message"] == "Oprema uspješno dodana"
     assert "id" in body
 
-   
-   # provjeravamo da je oprema dodana u bazu s ispravnim poljima
+    # provjeravamo da je oprema dodana u bazu s ispravnim poljima
     with Session(db_engine) as session:
         stmt = select(DBEquipment).where(DBEquipment.id_equipment == body["id"])
         equipment = session.exec(stmt).first()
@@ -56,7 +55,6 @@ def test_edit_equipment():
 
     assert response.status_code == 200
     assert response.json()["message"] == "Oprema uspješno ažurirana"
-
 
     # ponovno dohvatimo opremu GET-om i provjerimo jesu li se polja promijenila
     fetched = client.get(f"/equipment/{eq_id}").json()

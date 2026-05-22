@@ -3,20 +3,22 @@ from pydantic import BaseModel
 from database.py_classes import Users
 from datetime import date
 
-
 router = APIRouter(prefix="/users", tags=["Users"])
+
 
 # Opcenita Pydantic User instanca (FastAPI radi isključivo sa Pydantic BaseModel instancama)
 class UserInstance(BaseModel):
     email: str
     first_name: str
     last_name: str
-    password : str
+    password: str
     is_admin: bool = False
-    
+
+
 # Specijalna Pydantic user instanca za updejtanje lozinke
 class UserUpdatePassword(BaseModel):
     password: str
+
 
 # Specijalna Pydantic loan instanca za stvaranje rezervacije
 class LoanCreate(BaseModel):
@@ -24,12 +26,13 @@ class LoanCreate(BaseModel):
     start_date: date
     due_date: date
 
+
 # GET ruta, pretraživanje prema emailu korisnika
 @router.get("/{email}")
 def get_user(email: str):
     user = Users.fetch(email)
     if not user:
-        raise HTTPException(status_code=404,detail="Korisnik ne postoji")
+        raise HTTPException(status_code=404, detail="Korisnik ne postoji")
     return {
         "email": user.email,
         "first_name": user.first_name,
@@ -37,8 +40,9 @@ def get_user(email: str):
         # Maknuti, tu zbog testiranja PUT rute --
         "password": user.password,
         # --^
-        "is_admin": user.is_admin
+        "is_admin": user.is_admin,
     }
+
 
 # POST ruta
 @router.post("/")
@@ -51,10 +55,11 @@ def post_user(data: UserInstance):
         first_name=data.first_name,
         last_name=data.last_name,
         password=data.password,
-        is_admin=data.is_admin
+        is_admin=data.is_admin,
     )
     user.add()
     return {"message": "Korisnik uspješno kreiran"}
+
 
 # DELETE ruta
 @router.delete("/{email}")
@@ -65,6 +70,7 @@ def delete_user(email: str):
     user.delete()
     return {"message": "Korisnik uspješno obrisan"}
 
+
 # PUT ruta
 @router.put("/{email}")
 def update_user(email: str, data: UserUpdatePassword):
@@ -74,18 +80,20 @@ def update_user(email: str, data: UserUpdatePassword):
     user.update_password(data.password)
     return {"message": "Lozinka uspješno ažurirana"}
 
+
 @router.post("/{email}/loans")
 def make_reservation(email: str, data: LoanCreate):
     user = Users.fetch(email)
     if not user:
         raise HTTPException(status_code=404, detail="Korisnik ne postoji")
-    
+
     try:
         user.makeReservation(data.id_equipment, data.start_date, data.due_date)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
-    
+
     return {"message": "Rezervacija uspješno kreirana"}
+
 
 @router.delete("/{email}/loans/{id_loan}")
 def delete_reservation(email: str, id_loan: int):
