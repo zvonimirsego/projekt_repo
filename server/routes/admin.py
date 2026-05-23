@@ -1,10 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from database.py_classes import Admin
 
 router = APIRouter(prefix="/admin_panel", tags=["Admin"])
 
 admin = Admin("admin@mail.com", "Admin", "Admin", "sudo")
+constraints = ["new", "used", "heavily used", "broken"]
 
 
 class EquipmentInstance(BaseModel):
@@ -15,6 +16,8 @@ class EquipmentInstance(BaseModel):
 
 @router.post("/equipment")
 def add_equipment(data: EquipmentInstance):
+    if data.condition not in constraints:
+        raise HTTPException(status_code=422, detail="Pogrešan tip stanja opreme")
     id = admin.addEquipment(data.equipment_name, data.condition)
     return {"message": "Oprema uspješno dodana", "id": id}
 
