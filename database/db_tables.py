@@ -7,6 +7,7 @@ from sqlmodel import create_engine, SQLModel, Field
 path = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(path, "database.db")
 reset_script_path = os.path.join(path, "scripts", "create.sql")
+insert_script_path = os.path.join(path, "scripts", "demo_data.sql")
 
 db_engine = create_engine(f"sqlite:///{db_path}")
 
@@ -37,13 +38,29 @@ class Loan(SQLModel, table=True):
     returned: bool | None = False
 
 
-if __name__ == "__main__":
+def db_reset():
     with open(reset_script_path, "r", encoding="utf-8") as file:
         sql_script = file.read()
 
     with db_engine.raw_connection() as connection:
         connection.executescript(sql_script)
         connection.commit()
+
+    print("DB reset")
+
+
+def db_init():
+    with open(insert_script_path, "r", encoding="utf-8") as file:
+        sql_script = file.read()
+
+    with db_engine.raw_connection() as connection:
+        connection.executescript(sql_script)
+        connection.commit()
+
+
+if __name__ == "__main__":
+    db_reset()
+    db_init()
 
     # zsego = Users(id_email="zsego@university.hr", first_name="Zvonimir", last_name="Šego", password="password123")
     # busilica = Equipment(id_equipment="EQ001", equipment_name="Busilica", condition="new")
@@ -69,5 +86,3 @@ if __name__ == "__main__":
     #    statement = select(Loan)
     #    loan = session.exec(statement).first()
     #    print(loan)
-
-    print("DB reset")
