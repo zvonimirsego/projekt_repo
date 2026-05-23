@@ -33,6 +33,23 @@ class Loan:
                 returned=loan.returned,
             )
         return None
+    
+    @staticmethod
+    def fetch_all():
+        with Session(db_engine) as session:
+            statement = select(DBLoan)
+            loans = session.exec(statement).all()
+        return [
+            Loan(
+                id_loan=loan.id_loan,
+                id_user=loan.id_user,
+                id_equipment=loan.id_equipment,
+                starting_date=loan.start_date,
+                due_date=loan.due_date,
+                returned=loan.returned,
+            )
+            for loan in loans
+        ]
 
 
 class Users:
@@ -149,6 +166,22 @@ class Users:
                     is_admin=user.is_admin,
                 )
             return None
+    
+    @staticmethod
+    def fetch_all():
+        with Session(db_engine) as session:
+            statement = select(DBUsers)
+            users = session.exec(statement).all()
+            return [
+                Users(
+                    email=user.id_email,
+                    first_name=user.first_name,
+                    last_name=user.last_name,
+                    password=user.password,
+                    is_admin=user.is_admin,
+                )
+                for user in users
+            ]
 
 
 class Admin(Users):
@@ -224,3 +257,33 @@ class Equipment:
                 available=equipment.available,
             )
         return None
+    
+    @staticmethod
+    def fetch_all():
+        with Session(db_engine) as session:
+            statement = select(DBEquipment)
+            equipment_list = session.exec(statement).all()
+        return [
+            Equipment(
+                id_equipment=equipment.id_equipment,
+                equipment_name=equipment.equipment_name,
+                condition=equipment.condition,
+                available=equipment.available,
+            )
+            for equipment in equipment_list
+        ]
+    
+    @staticmethod
+    def fetch_available():
+        with Session(db_engine) as session:
+            statement = select(DBEquipment).where(DBEquipment.available == True)
+            equipment_list = session.exec(statement).all()
+        return [
+            Equipment(
+                id_equipment=equipment.id_equipment,
+                equipment_name=equipment.equipment_name,
+                condition=equipment.condition,
+                available=equipment.available,
+            )
+            for equipment in equipment_list
+        ]
