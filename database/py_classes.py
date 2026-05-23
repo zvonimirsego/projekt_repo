@@ -33,7 +33,7 @@ class Loan:
                 returned=loan.returned,
             )
         return None
-    
+
     @staticmethod
     def fetch_all():
         with Session(db_engine) as session:
@@ -166,7 +166,7 @@ class Users:
                     is_admin=user.is_admin,
                 )
             return None
-    
+
     @staticmethod
     def fetch_all():
         with Session(db_engine) as session:
@@ -228,9 +228,6 @@ class Admin(Users):
                 session.delete(equipment)
                 session.commit()
 
-    def sendWarning(self):
-        pass
-
 
 class Equipment:
     def __init__(self, id_equipment, equipment_name, condition, available):
@@ -257,7 +254,7 @@ class Equipment:
                 available=equipment.available,
             )
         return None
-    
+
     @staticmethod
     def fetch_all():
         with Session(db_engine) as session:
@@ -272,11 +269,11 @@ class Equipment:
             )
             for equipment in equipment_list
         ]
-    
+
     @staticmethod
     def fetch_available():
         with Session(db_engine) as session:
-            statement = select(DBEquipment).where(DBEquipment.available == True)
+            statement = select(DBEquipment).where(DBEquipment.available)
             equipment_list = session.exec(statement).all()
         return [
             Equipment(

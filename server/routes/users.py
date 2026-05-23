@@ -27,6 +27,13 @@ class LoanCreate(BaseModel):
     due_date: date
 
 
+# GET ruta, dohvaćanje svih usera
+@router.get("/all_users")
+def all_users():
+    users = Users.fetch_all()
+    return users
+
+
 # GET ruta, pretraživanje prema emailu korisnika
 @router.get("/{email}")
 def get_user(email: str):

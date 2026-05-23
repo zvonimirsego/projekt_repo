@@ -5,6 +5,7 @@ from database.py_classes import Admin
 router = APIRouter(prefix="/admin_panel", tags=["Admin"])
 
 admin = Admin("admin@mail.com", "Admin", "Admin", "sudo")
+
 constraints = ["new", "used", "heavily used", "broken"]
 
 
