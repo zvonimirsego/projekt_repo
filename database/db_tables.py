@@ -56,7 +56,7 @@ def db_init():
     with db_engine.raw_connection() as connection:
         connection.executescript(sql_script)
         connection.commit()
-    
+
     print("Demo inicijaliziran.")
 
 
