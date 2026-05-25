@@ -115,7 +115,7 @@ class TestReservation:
 
     def test_delete_reservation(self, equipment, test_user):
         user = test_user
-        user.makeReservation("AA001", date.today(), date.today() + timedelta(days=14))
+        user.makeReservation("AA001", date.today())
 
         with Session(db_engine) as session:
             statement = select(DBLoan).where(DBLoan.id_user == user.email)
