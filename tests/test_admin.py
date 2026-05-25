@@ -29,15 +29,18 @@ def clean_db():
         session.commit()
 
 
-# ---------- TESTS ----------
-
-
 class TestAdmin:
-    def test_admin_is_user(self, admin):
-        assert isinstance(admin, Users)
+    # unit test
+    def test_admin_default_flag(self):
 
-    def test_admin_init(self, admin):
+        admin = Admin("admin@gmail.com", "Admin", "User", "123")
+
         assert admin.is_admin is True
+
+    # unit test
+    def test_admin_inheritance(self):
+        admin = Admin("a@gmail.com", "Ime", "Prezime", "123")
+        assert isinstance(admin, Users)
 
     def test_add_equipment(self, admin):
 

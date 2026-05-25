@@ -73,18 +73,16 @@ def test_user():
             session.commit()
 
 
-def test_user_init(test_user):
+# unit test
+def test_user_constructor():
 
-    user = test_user
+    user = Users("mail@gmail.com", "Ken", "Levine", "1234")
 
-    assert user.email == "user@gmail.com"
+    assert user.email == "mail@gmail.com"
     assert user.first_name == "Ken"
+    assert user.last_name == "Levine"
+    assert user.password == "1234"
     assert user.is_admin is False
-
-
-def test_user_default_admin(test_user):
-
-    assert test_user.is_admin is False
 
 
 class TestReservation:

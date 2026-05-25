@@ -16,11 +16,27 @@ def loan():
     return loan
 
 
+# unit test
 def test_loan_init(loan):
 
     assert loan.id_user == "user@gmail.com"
 
 
+# unit test
 def test_loan_default_returned(loan):
 
     assert loan.returned is False
+
+
+# unit test
+def test_loan_returned_true():
+
+    loan = Loan(1, "u", "eq", date.today(), date.today(), True)
+
+    assert loan.returned is True
+
+
+def test_loan_fetch_fail():
+    loan = Loan.fetch(99999)
+
+    assert loan is None

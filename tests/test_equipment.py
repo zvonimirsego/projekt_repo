@@ -1,6 +1,9 @@
+import pytest
+
 from database.py_classes import Equipment
 
 
+# unit test
 def test_equipment_init():
 
     eq = Equipment("EQ001", "Kosilica", "new", True)
@@ -8,18 +11,29 @@ def test_equipment_init():
     assert eq.id_equipment == "EQ001"
 
 
-def test_checkAvailability():
+# unit test
+def test_checkAvailability_true():
     equipment = Equipment(1, "Kosilica", "new", True)
     assert equipment.checkAvailability() is True
 
 
+# unit test
 def test_checkAvailability_false():
     equipment = Equipment(1, "Kosilica", "new", False)
     assert equipment.checkAvailability() is False
 
 
-def test_equipment_condition():
+@pytest.mark.parametrize("condition", ["new", "used", "heavily used", "broken"])
 
-    eq = Equipment("EQ001", "Laptop", "used", True)
+# unit test
+def test_equipment_conditions(condition):
 
-    assert eq.condition == "used"
+    eq = Equipment("EQ001", "Laptop", condition, True)
+
+    assert eq.condition == condition
+
+
+def test_fetch_non_existing_equipment():
+    eq = Equipment.fetch("ZZ999")
+
+    assert eq is None
