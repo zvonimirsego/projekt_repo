@@ -46,7 +46,7 @@ def db_reset():
         connection.executescript(sql_script)
         connection.commit()
 
-    print("DB reset")
+    print("DB resetirana.")
 
 
 def db_init():
@@ -56,6 +56,8 @@ def db_init():
     with db_engine.raw_connection() as connection:
         connection.executescript(sql_script)
         connection.commit()
+    
+    print("Demo inicijaliziran.")
 
 
 if __name__ == "__main__":

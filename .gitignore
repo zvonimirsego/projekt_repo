@@ -4,3 +4,6 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 venv/
+database/__pycache__/
+server/__pycache__/
+server/routes/__pycache__/
