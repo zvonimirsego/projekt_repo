@@ -4,6 +4,13 @@ from database.py_classes import Loan
 router = APIRouter(prefix="/loan", tags=["Loan"])
 
 
+# GET ruta, dohvaćanje svih posudbi
+@router.get("/all_loans")
+def all_loans():
+    loans = Loan.fetch_all()
+    return loans
+
+
 # GET ruta, pretraživanje prema id-u posudbe
 @router.get("/{id_loan}")
 def get_loan(id_loan: int):
