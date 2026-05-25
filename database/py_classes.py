@@ -1,3 +1,4 @@
+from datetime import timedelta
 from database.db_tables import (
     db_engine,
     Users as DBUsers,
@@ -51,6 +52,22 @@ class Loan:
             for loan in loans
         ]
 
+    def fetch_by_user(id_user):
+        with Session(db_engine) as session:
+            statement = select(DBLoan).where(DBLoan.id_user == id_user)
+            loans = session.exec(statement).all()
+        return [
+            Loan(
+                id_loan=loan.id_loan,
+                id_user=loan.id_user,
+                id_equipment=loan.id_equipment,
+                starting_date=loan.start_date,
+                due_date=loan.due_date,
+                returned=loan.returned,
+            )
+            for loan in loans
+        ]
+
 
 class Users:
     def __init__(self, email, first_name, last_name, password, is_admin=False):
@@ -62,12 +79,15 @@ class Users:
         self.is_admin = is_admin
 
     # Morao sam dodati malu izmjenu kako bi se dostupnost opreme promjenila nakon posudbe, uz provjeru ako je dostupna
-    def makeReservation(self, id_equipment, starting_date, due_date):
+    def makeReservation(self, id_equipment, starting_date):
+        due_date = starting_date + timedelta(days=14)
+
         with Session(db_engine) as session:
             # provjeri dostupnost
             equipment = session.exec(
                 select(DBEquipment).where(DBEquipment.id_equipment == id_equipment)
             ).first()
+
         if not equipment:
             raise ValueError("Oprema ne postoji")
         if not equipment.available:
@@ -87,7 +107,6 @@ class Users:
         )
         session.add(db_loan)
 
-        # postavi available na False
         equipment.available = False
         session.add(equipment)
 

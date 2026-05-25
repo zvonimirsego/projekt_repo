@@ -24,7 +24,6 @@ class UserUpdatePassword(BaseModel):
 class LoanCreate(BaseModel):
     id_equipment: str
     start_date: date
-    due_date: date
 
 
 # GET ruta, dohvaćanje svih usera
@@ -95,7 +94,7 @@ def make_reservation(email: str, data: LoanCreate):
         raise HTTPException(status_code=404, detail="Korisnik ne postoji")
 
     try:
-        user.makeReservation(data.id_equipment, data.start_date, data.due_date)
+        user.makeReservation(data.id_equipment, data.start_date)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
