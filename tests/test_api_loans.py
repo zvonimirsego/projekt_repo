@@ -2,7 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlmodel import Session, select
 from sqlalchemy import text
-from datetime import date, timedelta
+from datetime import date
 
 from server.main import app
 from database.py_classes import Users, Admin
@@ -29,11 +29,10 @@ def user_and_equipment():
     yield "loaner@test.com", eq_id
 
 
-def _loan_body(eq_id, days=7):
+def _loan_body(eq_id):
     return {
         "id_equipment": eq_id,
         "start_date": date.today().isoformat(),
-        "due_date": (date.today() + timedelta(days=days)).isoformat(),
     }
 
 

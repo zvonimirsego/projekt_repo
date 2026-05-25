@@ -87,9 +87,7 @@ def test_user_constructor():
 
 class TestReservation:
     def test_make_reservation_success(self, equipment, test_user):
-        reservation = test_user.makeReservation(
-            "AA001", date.today(), date.today() + timedelta(days=14)
-        )
+        reservation = test_user.makeReservation("AA001", date.today())
 
         assert reservation is True
 
@@ -102,22 +100,18 @@ class TestReservation:
 
     def test_makeResrvation_fail_on_borrowed_equipment(self, equipment, test_user):
         user = test_user
-        user.makeReservation("AA001", date.today(), date.today() + timedelta(days=14))
+        user.makeReservation("AA001", date.today())
         with Session(db_engine) as session:
 
             session.commit()
 
         with pytest.raises(ValueError, match="Oprema nije dostupna"):
-            user.makeReservation(
-                "AA001", date.today(), date.today() + timedelta(days=14)
-            )
+            user.makeReservation("AA001", date.today())
 
     def test_makeReservation_fail_on_non_existing_equipment(self, test_user):
         user = test_user
         with pytest.raises(ValueError, match="Oprema ne postoji"):
-            user.makeReservation(
-                "ZZ999", date.today(), date.today() + timedelta(days=14)
-            )
+            user.makeReservation("ZZ999", date.today())
 
     def test_delete_reservation(self, equipment, test_user):
         user = test_user
