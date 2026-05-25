@@ -8,7 +8,7 @@ from database.db_tables import (
 )
 from sqlmodel import Session, select
 from sqlalchemy import text
-from datetime import date, timedelta
+from datetime import date
 
 
 @pytest.fixture(autouse=True)
