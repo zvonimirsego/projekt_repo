@@ -29,11 +29,11 @@ def test_delete_user():
 
 def test_update_password():
 
-    user = Users("test@gmail.com", "Ken", "Levine", "1234")
+    user = Users("test2@gmail.com", "Ken", "Levine", "1234")
 
     user.add()
 
-    response = client.put("/users/test@gmail.com", json={"password": "newpass"})
+    response = client.put("/users/test2@gmail.com", json={"password": "newpass"})
 
     assert response.status_code == 200
 
