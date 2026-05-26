@@ -71,3 +71,9 @@ docker compose up --build
 ### Mogući problemi
 * **`port is already allocated`** — neki drugi proces koristi port 8000. Promijenite port u `docker-compose.yml` iz `"8000:8000"` u npr. `"9000:8000"` i koristite http://localhost:9000.
 * **`Cannot connect to the Docker daemon`** — Docker Desktop nije pokrenut. Pokrenite ga iz Start izbornika i pričekajte da se ikona kita ustabili.
+
+---
+
+## 🎥 Pokretanje Demoa
+
+Za Demo je potrebno pokrenuti `demo.py` za inicijalizaciju demo podataka. 
