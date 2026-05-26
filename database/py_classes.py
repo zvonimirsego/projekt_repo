@@ -120,6 +120,15 @@ class Users:
             )
             loan = session.exec(statement).first()
             if loan:
+                equipment = session.exec(
+                    select(DBEquipment).where(
+                        DBEquipment.id_equipment == loan.id_equipment
+                    )
+                ).first()
+                if equipment:
+                    equipment.available = True
+                    session.add(equipment)
+
                 session.delete(loan)
                 session.commit()
                 return True
@@ -159,6 +168,29 @@ class Users:
         if user:
             session.delete(user)
             session.commit()
+
+    def returnReservation(self, id_loan):
+        with Session(db_engine) as session:
+            statement = select(DBLoan).where(
+                DBLoan.id_loan == id_loan, DBLoan.id_user == self.email
+            )
+            loan = session.exec(statement).first()
+            if loan and not loan.returned:
+                loan.returned = True
+                session.add(loan)
+
+                equipment = session.exec(
+                    select(DBEquipment).where(
+                        DBEquipment.id_equipment == loan.id_equipment
+                    )
+                ).first()
+                if equipment:
+                    equipment.available = True
+                    session.add(equipment)
+
+                session.commit()
+                return True
+            return False
 
     # Mijenja korisnikovu lozinku
     def update_password(self, password):
