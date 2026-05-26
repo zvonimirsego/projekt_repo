@@ -33,8 +33,8 @@ Tema ovog projekta je razvoj web aplikacije za posudbu opreme. Aplikacija omoguÄ
 Da biste projekt pokrenuli lokalno slijedite sljedeÄ‡e korake:  
 Otvorite novi terminal i pokrenite:
 ```bash
-python -m venv .venv
-.\.venv\Scripts\activate
+python -m venv venv/
+.\venv\Scripts\activate
 pip install --no-cache-dir -r requirements.txt
 uvicorn server.main:app --host 0.0.0.0 --port 8000
 ```
