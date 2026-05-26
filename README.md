@@ -30,7 +30,7 @@ Tema ovog projekta je razvoj web aplikacije za posudbu opreme. Aplikacija omogu�
 
 ## 💻 Pokretanje Projekta Lokalno
 
-Da biste projekt pokrenuli lokalno slijedite sljedeće korake:
+Da biste projekt pokrenuli lokalno slijedite sljedeće korake:  
 Otvorite novi terminal i pokrenite:
 ```bash
 python -m venv .venv
