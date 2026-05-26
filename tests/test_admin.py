@@ -82,6 +82,12 @@ class TestAdmin:
         assert edited.condition == "used"
         assert edited.available is False
 
+    def test_edit_non_existing_equipment(self, admin):
+
+        result = admin.editEquipment("EQ999", "mikrofon", "new", True)
+
+        assert result is None
+
     def test_delete_equipment_success(self, admin):
 
         admin.addEquipment("Projektor", "new")

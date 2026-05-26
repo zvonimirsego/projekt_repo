@@ -20,6 +20,13 @@ def test_create_user():
     assert response.status_code == 200
 
 
+def test_delete_user():
+
+    response = client.delete("/users/test@gmail.com")
+
+    assert response.status_code == 200
+
+
 def test_update_password():
 
     user = Users("test2@gmail.com", "Ken", "Levine", "1234")
