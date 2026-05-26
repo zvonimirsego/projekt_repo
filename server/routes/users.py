@@ -101,6 +101,18 @@ def make_reservation(email: str, data: LoanCreate):
     return {"message": "Rezervacija uspješno kreirana"}
 
 
+@router.put("/{email}/return/{id_loan}")
+def return_loan(email: str, id_loan: int):
+    user = Users.fetch(email)
+    if not user:
+        raise HTTPException(status_code=404, detail="Korisnik ne postoji")
+    
+    success = user.returnReservation(id_loan)
+    if not success:
+        raise HTTPException(status_code=400, detail="Posudba ne postoji ili je već vraćena")
+    return {"message": "Posudba uspješno vraćena"}
+
+
 @router.delete("/{email}/loans/{id_loan}")
 def delete_reservation(email: str, id_loan: int):
     user = Users.fetch(email)
